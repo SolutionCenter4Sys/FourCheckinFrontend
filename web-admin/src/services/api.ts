@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { installMockAdapter } from '../mock/adapter'
 
 const BASE_URL = '/api/v1'
 
@@ -9,6 +10,8 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+installMockAdapter(api)
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('auth_token')
