@@ -1,0 +1,71 @@
+# Dependências
+node_modules/
+web-admin/node_modules/
+
+# Build / Dist
+dist/
+dist-ssr/
+build/
+web-admin/dist/
+web-admin/dist-ssr/
+web-admin/build/
+
+# Vite
+.vite/
+web-admin/.vite/
+
+# TypeScript
+*.tsbuildinfo
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+web-admin/.env
+web-admin/.env.local
+web-admin/.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Cache
+.cache/
+.eslintcache
+.parcelcache
+
+# Cobertura de testes
+coverage/
+*.lcov
+
+# Editor / IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Pacotes opcionais npm
+.npm
+.yarn-integrity
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Scripts de desenvolvimento local
+start.ps1
+restart-mock.bat
+restart-mock.ps1
+start-with-mock.bat
