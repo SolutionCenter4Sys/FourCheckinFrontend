@@ -28,10 +28,12 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/web-admin"
+          app_location: "web-admin"
           api_location: ""
           output_location: "dist"
-          app_build_command: "npx vite build"
+          app_build_command: "npm ci && npm run build"
+          production_branch: "main"
+          deployment_environment: "Production"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
