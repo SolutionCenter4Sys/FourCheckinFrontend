@@ -528,4 +528,18 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-mui': ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
+          'vendor-maps': ['@react-google-maps/api'],
+          'vendor-charts': ['recharts'],
+          'vendor-misc': ['axios', 'zustand', 'date-fns'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 })
