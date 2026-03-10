@@ -1,27 +1,18 @@
 {
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/assets/*", "/*.js", "/*.css", "/*.svg", "/*.png", "/*.ico", "/*.json"]
-  },
-  "routes": [
-    {
-      "route": "/api/*",
-      "statusCode": 404
-    }
-  ],
-  "responseOverrides": {
-    "404": {
-      "rewrite": "/index.html",
-      "statusCode": 200
-    }
+    "exclude": ["/assets/**", "/*.ico", "/*.svg", "/*.png", "/*.webp", "/*.woff2"]
   },
   "globalHeaders": {
-    "cache-control": "no-store",
-    "x-content-type-options": "nosniff"
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-xss-protection": "1; mode=block"
   },
   "mimeTypes": {
-    ".json": "application/json",
     ".js": "text/javascript",
-    ".css": "text/css"
+    ".mjs": "text/javascript",
+    ".css": "text/css",
+    ".json": "application/json",
+    ".svg": "image/svg+xml"
   }
 }
