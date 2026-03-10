@@ -12,6 +12,9 @@ import NotifHistoricoPage from './pages/Notificacoes/NotifHistoricoPage'
 import EvidenciasPage from './pages/Evidencias/EvidenciasPage'
 import ApiDocsPage from './pages/ApiDocs/ApiDocsPage'
 import ExportacaoPage from './pages/Exportacao/ExportacaoPage'
+// EP-08: Personas, Fóruns e Check-in Inteligente
+import PersonasPage from './pages/Personas/PersonasPage'
+import ForunsPage from './pages/Foruns/ForunsPage'
 
 export default function App() {
   return (
@@ -30,6 +33,9 @@ export default function App() {
         <Route path="/evidencias"          element={<EvidenciasPage />} />
         <Route path="/api-docs"            element={<ApiDocsPage />} />
         <Route path="/exportacao"          element={<ExportacaoPage />} />
+        {/* EP-08 */}
+        <Route path="/personas"            element={<PersonasPage />} />
+        <Route path="/foruns"              element={<ForunsPage />} />
       </Route>
     </Routes>
   )

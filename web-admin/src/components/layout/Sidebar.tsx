@@ -6,13 +6,17 @@ import {
 import {
   Dashboard, EventNote, People, Security,
   Upload, Assessment, Notifications, GpsFixed,
-  Api, Download,
+  Api, Download, AccountCircle, Apartment,
 } from '@mui/icons-material'
 import { COLORS } from '../../theme'
 
 const navItems = [
   { label: 'Dashboard',           path: '/dashboard',           icon: <Dashboard /> },
   { label: 'Audiências',          path: '/audiencias',          icon: <EventNote /> },
+  // EP-08
+  { label: 'Personas',            path: '/personas',            icon: <AccountCircle /> },
+  { label: 'Fóruns',              path: '/foruns',              icon: <Apartment /> },
+  // Fim EP-08
   { label: 'Perfis RBAC',         path: '/rbac',                icon: <People /> },
   { label: 'Auditoria',           path: '/auditoria',           icon: <Security /> },
   { label: 'Upload CSV',          path: '/upload',              icon: <Upload /> },
@@ -96,8 +100,11 @@ export default function Sidebar({ open, width }: SidebarProps) {
 
       <Divider sx={{ borderColor: COLORS.border }} />
       <Box sx={{ p: 2 }}>
-        <Typography variant="caption" sx={{ color: COLORS.gray4 }}>
+        <Typography variant="caption" sx={{ color: COLORS.gray4, display: 'block' }}>
           Step 7 — Score 8.43/10 ✅
+        </Typography>
+        <Typography variant="caption" sx={{ color: COLORS.orange, fontSize: '0.65rem' }}>
+          EP-08 Personas · Fóruns · Check-in ✦
         </Typography>
       </Box>
     </Box>

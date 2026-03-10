@@ -135,6 +135,88 @@ export interface Usuario {
   ultimo_acesso: string
 }
 
+// ===== EP-08: PERSONAS, FÓRUNS E CHECK-IN INTELIGENTE =====
+
+export type TipoParticipante = 'PREPOSTO' | 'ADVOGADO' | 'TESTEMUNHA'
+
+export type StatusCheckinLink = 'PENDENTE' | 'LINK_ENVIADO' | 'LINK_ABERTO' | 'CHECKIN_REALIZADO' | 'AUSENTE'
+
+export type TipoAlertaCheckin = 'LINK_NAO_ABERTO' | 'AUSENCIA_PROVAVEL' | 'DISTANCIA_CRITICA' | 'CHECKIN_PENDENTE'
+
+export type TipoSalaForum = 'VARA' | 'PLENARIO' | 'AUDITORIO' | 'SALA_VIRTUAL'
+
+export interface SalaForum {
+  id: string
+  numero: string
+  nome?: string
+  andar: number
+  tipo: TipoSalaForum
+  capacidade?: number
+}
+
+export interface Forum {
+  id: string
+  nome: string
+  sigla: string
+  endereco: string
+  bairro: string
+  cidade: string
+  estado: string
+  cep: string
+  salas: SalaForum[]
+  telefone?: string
+  email?: string
+  ativo: boolean
+}
+
+export interface Persona {
+  id: string
+  nome: string
+  cpf: string
+  email: string
+  telefone: string
+  whatsapp?: string
+  estado: string
+  cidade: string
+  tipo: TipoParticipante
+  oab?: string
+  empresa?: string
+  departamento?: string
+  ativo: boolean
+  createdAt: string
+}
+
+export interface AlertaCheckin {
+  id: string
+  tipo: TipoAlertaCheckin
+  mensagem: string
+  participanteNome: string
+  criadoEm: string
+  resolvido: boolean
+}
+
+export interface ParticipanteAudiencia {
+  id: string
+  personaId?: string
+  nome: string
+  email: string
+  telefone?: string
+  whatsapp?: string
+  tipo: TipoParticipante
+  oab?: string
+  empresa?: string
+  statusCheckin: StatusCheckinLink
+  linkCheckin?: string
+  linkEnviadoWhatsapp: boolean
+  linkEnviadoEmail: boolean
+  linkAbertoEm?: string
+  checkinRealizadoEm?: string
+  distanciaKm?: number
+  alertas: AlertaCheckin[]
+}
+
+// ===== /EP-08 =====
+
 export interface DashboardKPIs {
   audiencias_hoje: { valor: number; em_andamento: number; agendadas: number; encerradas: number }
   total_participantes_hoje: { valor: number; presentes: number; ausentes: number; pendentes: number }
