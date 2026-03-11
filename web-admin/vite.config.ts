@@ -226,6 +226,39 @@ const audiencias = [
     pre_checkin_habilitado: false, offline_habilitado: false, questionario_habilitado: false,
     participantes: [],
   },
+  // ── Demo check-in positivo — Av. Paulista ──────────────────────────────────
+  {
+    id: 'AUD-007', nome: 'Conciliação — Av. Paulista (Demo)',
+    departamento: 'Jurídico Contencioso — Dr. Carlos Mendes',
+    data: hoje, horario_inicio: '10:00', horario_fim: '12:00',
+    local: 'Fórum Paulista — Av. Paulista, 1912, Bela Vista, São Paulo/SP',
+    latitude: -23.5631, longitude: -46.6546,
+    raio_geofence_metros: 500, status: 'em_andamento' as const,
+    total_participantes: 3, presentes: 1, ausentes: 0, taxa_presenca: 0.33,
+    pre_checkin_habilitado: true, offline_habilitado: true, questionario_habilitado: true,
+    participantes: [
+      mkPart('USR-006', true,  hojeISO(9, 55), -23.5631, -46.6546, 8, 'EV-016'),
+      mkPart('USR-007', false, null, null, null, null, null),
+      mkPart('USR-008', false, null, null, null, null, null),
+    ],
+  },
+  // ── Demo check-in positivo — Alphaville ───────────────────────────────────
+  {
+    id: 'AUD-008', nome: 'Mediação Trabalhista — Alphaville (Demo)',
+    departamento: 'Jurídico Trabalhista — Dra. Fernanda Lopes',
+    data: hoje, horario_inicio: '14:00', horario_fim: '16:00',
+    local: 'Fórum Alphaville — Av. Tamboré, 267, Alphaville, Barueri/SP',
+    latitude: -23.4967, longitude: -46.8487,
+    raio_geofence_metros: 500, status: 'em_andamento' as const,
+    total_participantes: 4, presentes: 0, ausentes: 0, taxa_presenca: 0,
+    pre_checkin_habilitado: true, offline_habilitado: true, questionario_habilitado: false,
+    participantes: [
+      mkPart('USR-009', false, null, null, null, null, null),
+      mkPart('USR-010', false, null, null, null, null, null),
+      mkPart('USR-011', false, null, null, null, null, null),
+      mkPart('USR-012', false, null, null, null, null, null),
+    ],
+  },
 ]
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -526,7 +559,8 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    port: 3000,
+    host: true,
   },
   build: {
     rollupOptions: {
@@ -534,7 +568,6 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-mui': ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
-          'vendor-maps': ['@react-google-maps/api'],
           'vendor-charts': ['recharts'],
           'vendor-misc': ['axios', 'zustand', 'date-fns'],
         },

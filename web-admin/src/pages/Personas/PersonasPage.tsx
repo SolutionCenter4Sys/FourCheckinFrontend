@@ -4,14 +4,29 @@ import {
   FormControl, InputLabel, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Chip, IconButton, Tooltip, Dialog,
   DialogTitle, DialogContent, DialogActions, Grid, Alert, Snackbar,
-  Avatar,
+  Avatar, Divider, LinearProgress,
 } from '@mui/material'
 import {
   Search, Upload, Add, Edit, Block, CheckCircle,
   Person, Gavel, Business, WhatsApp, Email,
+  History, EventAvailable, EventBusy, Place, AccessTime, VideoCall,
 } from '@mui/icons-material'
 import { COLORS } from '../../theme'
 import type { Persona, TipoParticipante } from '../../models/types'
+
+// ─── Tipos do histórico ──────────────────────────────────────────────────────
+interface HistoricoAudiencia {
+  id: string
+  audiencia_nome: string
+  data: string
+  horario: string
+  local: string
+  modalidade: 'PRESENCIAL' | 'REMOTA'
+  tipo_papel: TipoParticipante
+  compareceu: boolean
+  checkin_horario?: string
+  motivo_ausencia?: string
+}
 
 // ─── Mock — 60 personas (EP-08 / F-08.01) ───────────────────────────────────
 
@@ -81,6 +96,60 @@ const MOCK_PERSONAS: Persona[] = [
   { id: 'per-60', nome: 'Sebastiana Lúcia Cunha', cpf: '333.444.555-20', email: 'sebastiana.cunha@gmail.com', telefone: '(11) 97001-0020', estado: 'SP', cidade: 'São Paulo', tipo: 'TESTEMUNHA', ativo: true, createdAt: '2025-02-05T10:00:00Z' },
 ]
 
+// ─── Mock — histórico de audiências por persona ───────────────────────────
+const MOCK_HISTORICO: Record<string, HistoricoAudiencia[]> = {
+  'per-01': [
+    { id: 'h01-1', audiencia_nome: 'Conciliação — Contrato 2024/0012', data: '2026-03-10', horario: '09:00', local: 'Fórum João Mendes Jr. — Sala 12', modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '08:52' },
+    { id: 'h01-2', audiencia_nome: 'Trabalhista — Processo 0045/2025', data: '2026-02-20', horario: '11:00', local: 'Sala Virtual — Teams',              modalidade: 'REMOTA',    tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '10:58' },
+    { id: 'h01-3', audiencia_nome: 'Mediação Cível — Contrato 2023/0789', data: '2026-02-05', horario: '09:30', local: 'Fórum Regional de Pinheiros',      modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: false, motivo_ausencia: 'Não abriu link de check-in. Sem contato.' },
+    { id: 'h01-4', audiencia_nome: 'Instrução — Processo 0112/2024',    data: '2026-01-18', horario: '10:00', local: 'Fórum de Guarulhos — Vara 3',        modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '09:55' },
+    { id: 'h01-5', audiencia_nome: 'Audiência Cível — Processo 0067/2025', data: '2025-12-10', horario: '14:00', local: 'Fórum Regional de Santana',       modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '13:48' },
+    { id: 'h01-6', audiencia_nome: 'Conciliação — Processo 0031/2025',  data: '2025-11-22', horario: '10:30', local: 'Sala Virtual — Google Meet',         modalidade: 'REMOTA',    tipo_papel: 'ADVOGADO', compareceu: false, motivo_ausencia: 'Declarou impedimento de última hora.' },
+  ],
+  'per-02': [
+    { id: 'h02-1', audiencia_nome: 'Trabalhista — Processo 0045/2025', data: '2026-03-10', horario: '11:00', local: 'Sala Virtual — Teams',               modalidade: 'REMOTA',    tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '10:55' },
+    { id: 'h02-2', audiencia_nome: 'Perícia Contábil — Ação 0231/2024', data: '2026-02-14', horario: '14:00', local: 'Fórum João Mendes Jr. — Sala 8',    modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '13:50' },
+    { id: 'h02-3', audiencia_nome: 'Instrução — Processo 0112/2024',   data: '2026-01-18', horario: '10:00', local: 'Fórum de Guarulhos — Vara 3',         modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: false, motivo_ausencia: 'Substituída por colega sem aviso prévio.' },
+    { id: 'h02-4', audiencia_nome: 'Conciliação — Contrato 2023/0101', data: '2025-12-05', horario: '09:00', local: 'Fórum Regional de Santo Amaro',       modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '08:47' },
+  ],
+  'per-03': [
+    { id: 'h03-1', audiencia_nome: 'Mediação Cível — Contrato 2023/0789', data: '2026-03-05', horario: '09:30', local: 'Fórum Regional de Pinheiros', modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '09:22' },
+    { id: 'h03-2', audiencia_nome: 'Audiência Cível — Processo 0099/2023', data: '2026-01-30', horario: '15:00', local: 'Fórum Regional de Itaquera', modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: false, motivo_ausencia: 'Distância crítica detectada — não compareceu.' },
+    { id: 'h03-3', audiencia_nome: 'Instrução — Processo 0089/2025',   data: '2025-12-18', horario: '11:00', local: 'Fórum de Guarulhos — Vara 5',   modalidade: 'PRESENCIAL', tipo_papel: 'ADVOGADO', compareceu: true,  checkin_horario: '10:50' },
+  ],
+  'per-21': [
+    { id: 'h21-1', audiencia_nome: 'Trabalhista — Processo 0045/2025', data: '2026-03-10', horario: '11:00', local: 'Sala Virtual — Teams',               modalidade: 'REMOTA',    tipo_papel: 'PREPOSTO', compareceu: true,  checkin_horario: '10:53' },
+    { id: 'h21-2', audiencia_nome: 'Conciliação — Contrato 2024/0012', data: '2026-03-10', horario: '09:00', local: 'Fórum João Mendes Jr. — Sala 12',    modalidade: 'PRESENCIAL', tipo_papel: 'PREPOSTO', compareceu: false, motivo_ausencia: 'Ausente — sem check-in e sem contato.' },
+    { id: 'h21-3', audiencia_nome: 'Audiência Trabalhista — 0120/2025', data: '2026-02-25', horario: '10:00', local: 'Fórum Regional de Santana',         modalidade: 'PRESENCIAL', tipo_papel: 'PREPOSTO', compareceu: true,  checkin_horario: '09:58' },
+    { id: 'h21-4', audiencia_nome: 'Mediação — Processo 0055/2025',    data: '2026-01-15', horario: '14:30', local: 'Sala Virtual — Google Meet',         modalidade: 'REMOTA',    tipo_papel: 'PREPOSTO', compareceu: true,  checkin_horario: '14:28' },
+    { id: 'h21-5', audiencia_nome: 'Conciliação — Contrato 2023/0445', data: '2025-11-30', horario: '09:00', local: 'Fórum Regional da Penha',            modalidade: 'PRESENCIAL', tipo_papel: 'PREPOSTO', compareceu: false, motivo_ausencia: 'Cancelou na véspera sem substituto.' },
+  ],
+  'per-22': [
+    { id: 'h22-1', audiencia_nome: 'Conciliação — Contrato 2024/0099', data: '2026-03-07', horario: '10:00', local: 'Fórum João Mendes Jr. — Sala 4',    modalidade: 'PRESENCIAL', tipo_papel: 'PREPOSTO', compareceu: true,  checkin_horario: '09:50' },
+    { id: 'h22-2', audiencia_nome: 'Trabalhista — Processo 0090/2025', data: '2026-02-10', horario: '09:00', local: 'Fórum Regional de Santo Amaro',      modalidade: 'PRESENCIAL', tipo_papel: 'PREPOSTO', compareceu: true,  checkin_horario: '08:57' },
+    { id: 'h22-3', audiencia_nome: 'Instrução — Processo 0210/2025',   data: '2026-01-20', horario: '11:30', local: 'Sala Virtual — Teams',               modalidade: 'REMOTA',    tipo_papel: 'PREPOSTO', compareceu: false, motivo_ausencia: 'Problemas técnicos — link não aberto.' },
+  ],
+  'per-41': [
+    { id: 'h41-1', audiencia_nome: 'Conciliação — Contrato 2024/0012', data: '2026-03-10', horario: '09:00', local: 'Fórum João Mendes Jr. — Sala 12',    modalidade: 'PRESENCIAL', tipo_papel: 'TESTEMUNHA', compareceu: true,  checkin_horario: '08:58' },
+    { id: 'h41-2', audiencia_nome: 'Instrução — Processo 0112/2024',   data: '2026-01-18', horario: '10:00', local: 'Fórum de Guarulhos — Vara 3',         modalidade: 'PRESENCIAL', tipo_papel: 'TESTEMUNHA', compareceu: true,  checkin_horario: '09:52' },
+    { id: 'h41-3', audiencia_nome: 'Audiência Cível — Processo 0077/2024', data: '2025-12-03', horario: '15:00', local: 'Fórum Regional de Santana',      modalidade: 'PRESENCIAL', tipo_papel: 'TESTEMUNHA', compareceu: false, motivo_ausencia: 'Não compareceu. Alegou desconhecimento da convocação.' },
+    { id: 'h41-4', audiencia_nome: 'Mediação Cível — Contrato 2023/0789', data: '2025-10-22', horario: '14:00', local: 'Sala Virtual — Zoom',             modalidade: 'REMOTA',    tipo_papel: 'TESTEMUNHA', compareceu: true,  checkin_horario: '13:55' },
+  ],
+  'per-42': [
+    { id: 'h42-1', audiencia_nome: 'Trabalhista — Processo 0045/2025', data: '2026-03-10', horario: '11:00', local: 'Sala Virtual — Teams',               modalidade: 'REMOTA',    tipo_papel: 'TESTEMUNHA', compareceu: false, motivo_ausencia: 'Link enviado, não acessado.' },
+    { id: 'h42-2', audiencia_nome: 'Mediação — Processo 0033/2025',    data: '2026-02-12', horario: '10:30', local: 'Fórum Regional da Penha',            modalidade: 'PRESENCIAL', tipo_papel: 'TESTEMUNHA', compareceu: true,  checkin_horario: '10:25' },
+  ],
+  'per-43': [
+    { id: 'h43-1', audiencia_nome: 'Conciliação — Contrato 2024/0012', data: '2026-03-10', horario: '09:00', local: 'Fórum João Mendes Jr. — Sala 12',    modalidade: 'PRESENCIAL', tipo_papel: 'TESTEMUNHA', compareceu: true,  checkin_horario: '08:53' },
+    { id: 'h43-2', audiencia_nome: 'Audiência Cível — Processo 0099/2023', data: '2026-01-30', horario: '15:00', local: 'Fórum Regional de Itaquera',     modalidade: 'PRESENCIAL', tipo_papel: 'TESTEMUNHA', compareceu: true,  checkin_horario: '14:48' },
+  ],
+  'per-24': [
+    { id: 'h24-1', audiencia_nome: 'Mediação Cível — Contrato 2023/0789', data: '2026-03-10', horario: '09:30', local: 'Fórum Regional de Pinheiros',    modalidade: 'PRESENCIAL', tipo_papel: 'PREPOSTO', compareceu: true,  checkin_horario: '09:22' },
+    { id: 'h24-2', audiencia_nome: 'Trabalhista — Processo 0210/2025',  data: '2026-02-15', horario: '10:00', local: 'Fórum de São Bernardo do Campo',     modalidade: 'PRESENCIAL', tipo_papel: 'PREPOSTO', compareceu: true,  checkin_horario: '09:54' },
+    { id: 'h24-3', audiencia_nome: 'Conciliação — Ação 0045/2025',     data: '2025-12-20', horario: '11:00', local: 'Sala Virtual — Teams',               modalidade: 'REMOTA',    tipo_papel: 'PREPOSTO', compareceu: false, motivo_ausencia: 'Ausência não justificada.' },
+  ],
+}
+
 // ─── Configuração visual por tipo ──────────────────────────────────────────
 const TIPO_CONFIG: Record<TipoParticipante, { label: string; color: string; icon: React.ReactNode }> = {
   ADVOGADO:  { label: 'Advogado',  color: '#3B82F6', icon: <Gavel sx={{ fontSize: 14 }} /> },
@@ -91,6 +160,214 @@ const TIPO_CONFIG: Record<TipoParticipante, { label: string; color: string; icon
 const ESTADOS_BR = ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
 const CIDADES_SP = ['Barueri','Carapicuíba','Diadema','Guarulhos','Mogi das Cruzes','Osasco','Santo André','São Bernardo do Campo','São Paulo','Taboão da Serra']
 
+// ─── Dialog Histórico ─────────────────────────────────────────────────────
+function DialogHistoricoPersona({
+  persona,
+  onFechar,
+}: {
+  persona: Persona | null
+  onFechar: () => void
+}) {
+  if (!persona) return null
+
+  const historico: HistoricoAudiencia[] = (MOCK_HISTORICO[persona.id] ?? [])
+    .sort((a, b) => (a.data + a.horario < b.data + b.horario ? 1 : -1))
+
+  const total = historico.length
+  const presentes = historico.filter(h => h.compareceu).length
+  const ausentes = total - presentes
+  const taxa = total > 0 ? presentes / total : 0
+
+  const cfg = TIPO_CONFIG[persona.tipo]
+  const iniciais = persona.nome.split(' ').filter(Boolean).slice(0, 2).map(n => n[0].toUpperCase()).join('')
+
+  function fmtData(data: string) {
+    const [y, m, d] = data.split('-')
+    return `${d}/${m}/${y}`
+  }
+
+  return (
+    <Dialog
+      open={!!persona}
+      onClose={onFechar}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{ sx: { bgcolor: COLORS.surface, border: `1px solid ${COLORS.border}` } }}
+    >
+      {/* ── Header ── */}
+      <DialogTitle sx={{ borderBottom: `1px solid ${COLORS.border}`, pb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Avatar sx={{ width: 44, height: 44, bgcolor: `${cfg.color}22`, color: cfg.color, fontWeight: 700 }}>
+            {iniciais}
+          </Avatar>
+          <Box sx={{ flex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="h6" sx={{ color: COLORS.white, fontWeight: 700 }}>{persona.nome}</Typography>
+              <Chip
+                icon={cfg.icon as React.ReactElement}
+                label={cfg.label}
+                size="small"
+                sx={{ bgcolor: `${cfg.color}18`, color: cfg.color, border: `1px solid ${cfg.color}40`, fontWeight: 600 }}
+              />
+            </Box>
+            <Typography variant="caption" sx={{ color: COLORS.gray3 }}>
+              {persona.email} · {persona.telefone}
+            </Typography>
+          </Box>
+          <History sx={{ color: COLORS.orange, fontSize: 28 }} />
+        </Box>
+      </DialogTitle>
+
+      <DialogContent sx={{ pt: 2.5 }}>
+        {/* ── KPIs de presença ── */}
+        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+          {[
+            { label: 'Audiências', value: total,    color: COLORS.orange },
+            { label: 'Compareceu', value: presentes, color: COLORS.green },
+            { label: 'Ausências',  value: ausentes,  color: '#F87171' },
+          ].map(k => (
+            <Paper key={k.label} sx={{ flex: '1 1 100px', px: 2.5, py: 1.5, bgcolor: COLORS.raised, border: `1px solid ${COLORS.border}`, textAlign: 'center' }}>
+              <Typography variant="h5" sx={{ color: k.color, fontWeight: 800 }}>{k.value}</Typography>
+              <Typography variant="caption" sx={{ color: COLORS.gray3 }}>{k.label}</Typography>
+            </Paper>
+          ))}
+          <Paper sx={{ flex: '2 1 200px', px: 2.5, py: 1.5, bgcolor: COLORS.raised, border: `1px solid ${COLORS.border}` }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+              <Typography variant="caption" sx={{ color: COLORS.gray3 }}>Taxa de presença</Typography>
+              <Typography variant="caption" sx={{ color: taxa >= 0.8 ? COLORS.green : taxa >= 0.5 ? COLORS.amber : '#F87171', fontWeight: 700 }}>
+                {(taxa * 100).toFixed(0)}%
+              </Typography>
+            </Box>
+            <LinearProgress
+              variant="determinate"
+              value={taxa * 100}
+              sx={{
+                height: 8, borderRadius: 4,
+                bgcolor: 'rgba(255,255,255,0.08)',
+                '& .MuiLinearProgress-bar': {
+                  bgcolor: taxa >= 0.8 ? COLORS.green : taxa >= 0.5 ? COLORS.amber : '#F87171',
+                  borderRadius: 4,
+                },
+              }}
+            />
+          </Paper>
+        </Box>
+
+        <Divider sx={{ borderColor: COLORS.border, mb: 2 }} />
+
+        {/* ── Timeline de audiências ── */}
+        <Typography variant="caption" sx={{ color: COLORS.gray3, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 1.5 }}>
+          Histórico de audiências (mais recente primeiro)
+        </Typography>
+
+        {historico.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <History sx={{ color: COLORS.gray4, fontSize: 40, mb: 1 }} />
+            <Typography variant="body2" sx={{ color: COLORS.gray3 }}>
+              Nenhuma audiência registrada para esta persona.
+            </Typography>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            {historico.map((h, idx) => {
+              const papelCfg = TIPO_CONFIG[h.tipo_papel]
+              return (
+                <Box key={h.id} sx={{ display: 'flex', gap: 0 }}>
+                  {/* ── Linha do tempo ── */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mr: 2, minWidth: 24 }}>
+                    <Box sx={{
+                      width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
+                      bgcolor: h.compareceu ? `${COLORS.green}22` : 'rgba(248,113,113,0.15)',
+                      border: `2px solid ${h.compareceu ? COLORS.green : '#F87171'}`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      {h.compareceu
+                        ? <EventAvailable sx={{ fontSize: 13, color: COLORS.green }} />
+                        : <EventBusy sx={{ fontSize: 13, color: '#F87171' }} />
+                      }
+                    </Box>
+                    {idx < historico.length - 1 && (
+                      <Box sx={{ flex: 1, width: 2, bgcolor: COLORS.border, mt: 0.5, mb: 0 }} />
+                    )}
+                  </Box>
+
+                  {/* ── Card ── */}
+                  <Box sx={{
+                    flex: 1, mb: idx < historico.length - 1 ? 1 : 0,
+                    p: 1.5, borderRadius: 1.5,
+                    bgcolor: COLORS.raised,
+                    border: `1px solid ${h.compareceu ? `${COLORS.green}25` : 'rgba(248,113,113,0.25)'}`,
+                  }}>
+                    {/* Nome + status */}
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 0.75, gap: 1, flexWrap: 'wrap' }}>
+                      <Typography variant="body2" sx={{ color: COLORS.white, fontWeight: 600, flex: 1 }}>
+                        {h.audiencia_nome}
+                      </Typography>
+                      <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
+                        <Chip
+                          label={papelCfg.label}
+                          size="small"
+                          sx={{ height: 18, fontSize: '0.6rem', bgcolor: `${papelCfg.color}18`, color: papelCfg.color }}
+                        />
+                        <Chip
+                          label={h.compareceu ? '✓ Compareceu' : '✗ Ausente'}
+                          size="small"
+                          sx={{
+                            height: 18, fontSize: '0.6rem', fontWeight: 700,
+                            bgcolor: h.compareceu ? `${COLORS.green}18` : 'rgba(248,113,113,0.15)',
+                            color: h.compareceu ? COLORS.green : '#F87171',
+                          }}
+                        />
+                      </Box>
+                    </Box>
+
+                    {/* Data · Horário · Local */}
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
+                        <AccessTime sx={{ fontSize: 12, color: COLORS.gray3 }} />
+                        <Typography variant="caption" sx={{ color: COLORS.gray3 }}>
+                          {fmtData(h.data)} às {h.horario}
+                          {h.compareceu && h.checkin_horario && (
+                            <Box component="span" sx={{ color: COLORS.green, ml: 0.5 }}>
+                              · check-in {h.checkin_horario}
+                            </Box>
+                          )}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
+                        {h.modalidade === 'REMOTA'
+                          ? <VideoCall sx={{ fontSize: 12, color: '#A78BFA' }} />
+                          : <Place sx={{ fontSize: 12, color: COLORS.gray3 }} />
+                        }
+                        <Typography variant="caption" sx={{ color: COLORS.gray3 }}>
+                          {h.modalidade === 'REMOTA' ? 'Remota' : ''} {h.local}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Motivo de ausência */}
+                    {!h.compareceu && h.motivo_ausencia && (
+                      <Box sx={{ mt: 0.75, px: 1, py: 0.5, bgcolor: 'rgba(248,113,113,0.08)', borderRadius: 0.75, borderLeft: `2px solid #F87171` }}>
+                        <Typography variant="caption" sx={{ color: '#F87171', fontStyle: 'italic' }}>
+                          {h.motivo_ausencia}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              )
+            })}
+          </Box>
+        )}
+      </DialogContent>
+
+      <DialogActions sx={{ borderTop: `1px solid ${COLORS.border}`, px: 3, py: 2 }}>
+        <Button onClick={onFechar} sx={{ color: COLORS.gray3 }}>Fechar</Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
 // ─── Componente principal ──────────────────────────────────────────────────
 export default function PersonasPage() {
   const [personas, setPersonas] = useState<Persona[]>(MOCK_PERSONAS)
@@ -99,6 +376,7 @@ export default function PersonasPage() {
   const [filtroEstado, setFiltroEstado] = useState('')
   const [filtroCidade, setFiltroCidade] = useState('')
   const [dialogAberto, setDialogAberto] = useState(false)
+  const [personaHistorico, setPersonaHistorico] = useState<Persona | null>(null)
   const [snack, setSnack] = useState<{ open: boolean; msg: string; tipo: 'success' | 'error' }>({ open: false, msg: '', tipo: 'success' })
   const [form, setForm] = useState<Partial<Persona>>({ tipo: 'ADVOGADO', estado: 'SP', ativo: true })
 
@@ -300,6 +578,29 @@ export default function PersonasPage() {
                     />
                   </TableCell>
                   <TableCell>
+                    <Tooltip title="Ver histórico de audiências">
+                      <IconButton
+                        size="small"
+                        onClick={() => setPersonaHistorico(p)}
+                        sx={{
+                          color: MOCK_HISTORICO[p.id]?.length ? COLORS.orange : COLORS.gray4,
+                          position: 'relative',
+                        }}
+                      >
+                        <History fontSize="small" />
+                        {(MOCK_HISTORICO[p.id]?.length ?? 0) > 0 && (
+                          <Box sx={{
+                            position: 'absolute', top: 0, right: 0,
+                            width: 14, height: 14, borderRadius: '50%',
+                            bgcolor: COLORS.orange, color: '#fff',
+                            fontSize: '0.55rem', fontWeight: 700,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            {MOCK_HISTORICO[p.id].length}
+                          </Box>
+                        )}
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title="Editar">
                       <IconButton size="small" sx={{ color: COLORS.gray3 }}><Edit fontSize="small" /></IconButton>
                     </Tooltip>
@@ -392,6 +693,12 @@ export default function PersonasPage() {
           <Button variant="contained" onClick={handleSalvar} startIcon={<Add />}>Salvar</Button>
         </DialogActions>
       </Dialog>
+
+      {/* ── Dialog Histórico ── */}
+      <DialogHistoricoPersona
+        persona={personaHistorico}
+        onFechar={() => setPersonaHistorico(null)}
+      />
 
       {/* ── Snackbar ── */}
       <Snackbar open={snack.open} autoHideDuration={3500} onClose={() => setSnack(s => ({ ...s, open: false }))} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>

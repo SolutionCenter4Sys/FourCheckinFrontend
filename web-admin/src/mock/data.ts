@@ -167,6 +167,39 @@ export const audiencias: any[] = [
     pre_checkin_habilitado: false, offline_habilitado: false, questionario_habilitado: false,
     participantes: [],
   },
+  // ── Demo check-in positivo — Av. Paulista ──────────────────────────────────
+  {
+    id: 'AUD-007', nome: 'Conciliação — Av. Paulista (Demo)',
+    departamento: 'Jurídico Contencioso — Dr. Carlos Mendes',
+    data: hoje, horario_inicio: '10:00', horario_fim: '12:00',
+    local: 'Fórum Paulista — Av. Paulista, 1912, Bela Vista, São Paulo/SP',
+    latitude: -23.5631, longitude: -46.6546,
+    raio_geofence_metros: 500, status: 'em_andamento',
+    total_participantes: 3, presentes: 1, ausentes: 0, taxa_presenca: 0.33,
+    pre_checkin_habilitado: true, offline_habilitado: true, questionario_habilitado: true,
+    participantes: [
+      mkPart('USR-006', true,  hISO(9, 55), -23.5631, -46.6546, 8, 'EV-016'),
+      mkPart('USR-007', false, null, null, null, null, null),
+      mkPart('USR-008', false, null, null, null, null, null),
+    ],
+  },
+  // ── Demo check-in positivo — Alphaville ───────────────────────────────────
+  {
+    id: 'AUD-008', nome: 'Mediação Trabalhista — Alphaville (Demo)',
+    departamento: 'Jurídico Trabalhista — Dra. Fernanda Lopes',
+    data: hoje, horario_inicio: '14:00', horario_fim: '16:00',
+    local: 'Fórum Alphaville — Av. Tamboré, 267, Alphaville, Barueri/SP',
+    latitude: -23.4967, longitude: -46.8487,
+    raio_geofence_metros: 500, status: 'em_andamento',
+    total_participantes: 4, presentes: 0, ausentes: 0, taxa_presenca: 0,
+    pre_checkin_habilitado: true, offline_habilitado: true, questionario_habilitado: false,
+    participantes: [
+      mkPart('USR-009', false, null, null, null, null, null),
+      mkPart('USR-010', false, null, null, null, null, null),
+      mkPart('USR-011', false, null, null, null, null, null),
+      mkPart('USR-012', false, null, null, null, null, null),
+    ],
+  },
 ]
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -208,16 +241,20 @@ export const evidencias = checkins.map((c, i) => ({
 // Notificacoes — 12
 // ═══════════════════════════════════════════════════════════════════════════════
 export const notificacoes = [
-  { id: 'NOT-001', tipo: 'ausencia_critica', titulo: 'Ausência Crítica Detectada', corpo: 'Carla Nunes (Requerente) não realizou check-in.', usuario_nome: 'Carla Nunes',    audiencia_nome: 'Conciliação — Contrato 2024/0012',    canal: 'push',  status: 'entregue', lida: false, created_at: hISO(9, 35), enviada_em: hISO(9, 35), entregue_em: hISO(9, 35), lida_em: null },
-  { id: 'NOT-002', tipo: 'ausencia_critica', titulo: 'Ausência Crítica Detectada', corpo: 'Lucas Barbosa não realizou check-in.',            usuario_nome: 'Lucas Barbosa',  audiencia_nome: 'Conciliação — Contrato 2024/0012',    canal: 'push',  status: 'falha',    lida: false, created_at: hISO(9, 36), enviada_em: hISO(9, 36), entregue_em: null,         lida_em: null },
+  { id: 'NOT-001', tipo: 'ausencia_critica', titulo: 'Ausência Crítica Detectada', corpo: 'Carla Nunes (Requerente) não realizou check-in.', usuario_nome: 'Carla Nunes',    audiencia_nome: 'Conciliação — Contrato 2024/0012',    canal: 'push',  status: 'entregue', lida: false, created_at: hISO(9, 35), enviada_em: hISO(9, 35), entregue_em: hISO(9, 35), lida_em: null,
+    tipo_participante: 'TESTEMUNHA', telefone: '(11) 98765-4321', audiencia_local: 'Sala de Reuniões A — 3º Andar', audiencia_horario_inicio: '09:00', audiencia_id: 'AUD-001', distancia_km: 8.5, tempo_deslocamento_min: 25 },
+  { id: 'NOT-002', tipo: 'ausencia_critica', titulo: 'Ausência Crítica Detectada', corpo: 'Lucas Barbosa não realizou check-in.',            usuario_nome: 'Lucas Barbosa',  audiencia_nome: 'Conciliação — Contrato 2024/0012',    canal: 'push',  status: 'falha',    lida: false, created_at: hISO(9, 36), enviada_em: hISO(9, 36), entregue_em: null,         lida_em: null,
+    tipo_participante: 'PREPOSTO',   telefone: '(11) 97654-3210', audiencia_local: 'Sala de Reuniões A — 3º Andar', audiencia_horario_inicio: '09:00', audiencia_id: 'AUD-001', distancia_km: 12.3, tempo_deslocamento_min: 40 },
   { id: 'NOT-003', tipo: 'checkin_confirmado', titulo: 'Check-in Confirmado', corpo: 'Ana Souza realizou check-in às 08:58.',                usuario_nome: 'Ana Souza',      audiencia_nome: 'Conciliação — Contrato 2024/0012',    canal: 'push',  status: 'lida',     lida: true,  created_at: hISO(8, 59), enviada_em: hISO(8, 59), entregue_em: hISO(8, 59), lida_em: hISO(9, 5) },
   { id: 'NOT-004', tipo: 'checkin_confirmado', titulo: 'Check-in Confirmado', corpo: 'Isabel Costa realizou check-in offline às 08:50.',      usuario_nome: 'Isabel Costa',   audiencia_nome: 'Conciliação — Contrato 2024/0012',    canal: 'push',  status: 'lida',     lida: true,  created_at: hISO(8, 51), enviada_em: hISO(8, 51), entregue_em: hISO(8, 51), lida_em: hISO(8, 55) },
   { id: 'NOT-005', tipo: 'lembrete', titulo: 'Audiência em 30 Minutos', corpo: 'Trabalhista — Processo 0045/2025 inicia às 11:00.',           usuario_nome: 'Bruno Lima',     audiencia_nome: 'Trabalhista — Processo 0045/2025',    canal: 'email', status: 'entregue', lida: false, created_at: hISO(10, 30), enviada_em: hISO(10, 30), entregue_em: hISO(10, 30), lida_em: null },
   { id: 'NOT-006', tipo: 'lembrete', titulo: 'Audiência em 30 Minutos', corpo: 'Trabalhista — Processo 0045/2025 inicia às 11:00.',           usuario_nome: 'Diego Faria',    audiencia_nome: 'Trabalhista — Processo 0045/2025',    canal: 'email', status: 'entregue', lida: false, created_at: hISO(10, 30), enviada_em: hISO(10, 30), entregue_em: hISO(10, 31), lida_em: null },
   { id: 'NOT-007', tipo: 'audiencia_criada', titulo: 'Nova Audiência Criada', corpo: 'Perícia Contábil criada para hoje às 14:00.',           usuario_nome: 'Carlos Mendes',  audiencia_nome: 'Perícia Contábil — Ação 0231/2024',   canal: 'push',  status: 'lida',     lida: true,  created_at: hISO(7, 30), enviada_em: hISO(7, 30), entregue_em: hISO(7, 30), lida_em: hISO(7, 45) },
   { id: 'NOT-008', tipo: 'audiencia_encerrada', titulo: 'Audiência Encerrada', corpo: 'Instrução — Processo 0112/2024 encerrada.',            usuario_nome: 'Fernanda Lopes', audiencia_nome: 'Instrução — Processo 0112/2024',      canal: 'push',  status: 'lida',     lida: true,  created_at: oISO(12, 5), enviada_em: oISO(12, 5), entregue_em: oISO(12, 5), lida_em: oISO(12, 20) },
-  { id: 'NOT-009', tipo: 'ausencia_critica', titulo: 'Ausência Detectada', corpo: 'Bruno Lima não realizou check-in na Mediação Cível.',      usuario_nome: 'Bruno Lima',     audiencia_nome: 'Mediação Cível — Contrato 2023/0789', canal: 'push',  status: 'entregue', lida: false, created_at: hISO(9, 45), enviada_em: hISO(9, 45), entregue_em: hISO(9, 46), lida_em: null },
-  { id: 'NOT-010', tipo: 'ausencia_critica', titulo: 'Ausência Detectada', corpo: 'Henrique Alves não realizou check-in na Mediação Cível.',  usuario_nome: 'Henrique Alves', audiencia_nome: 'Mediação Cível — Contrato 2023/0789', canal: 'sms',   status: 'entregue', lida: false, created_at: hISO(9, 46), enviada_em: hISO(9, 46), entregue_em: hISO(9, 47), lida_em: null },
+  { id: 'NOT-009', tipo: 'ausencia_critica', titulo: 'Ausência Detectada', corpo: 'Bruno Lima não realizou check-in na Mediação Cível.',      usuario_nome: 'Bruno Lima',     audiencia_nome: 'Mediação Cível — Contrato 2023/0789', canal: 'push',  status: 'entregue', lida: false, created_at: hISO(9, 45), enviada_em: hISO(9, 45), entregue_em: hISO(9, 46), lida_em: null,
+    tipo_participante: 'ADVOGADO',   telefone: '(11) 96543-2109', audiencia_local: 'Sala de Reuniões B — 5º Andar', audiencia_horario_inicio: '09:30', audiencia_id: 'AUD-003', distancia_km: 15.7, tempo_deslocamento_min: 50 },
+  { id: 'NOT-010', tipo: 'ausencia_critica', titulo: 'Ausência Detectada', corpo: 'Henrique Alves não realizou check-in na Mediação Cível.',  usuario_nome: 'Henrique Alves', audiencia_nome: 'Mediação Cível — Contrato 2023/0789', canal: 'sms',   status: 'entregue', lida: false, created_at: hISO(9, 46), enviada_em: hISO(9, 46), entregue_em: hISO(9, 47), lida_em: null,
+    tipo_participante: 'PREPOSTO',   telefone: '(11) 95432-1098', audiencia_local: 'Sala de Reuniões B — 5º Andar', audiencia_horario_inicio: '09:30', audiencia_id: 'AUD-003', distancia_km: 22.4, tempo_deslocamento_min: 65 },
   { id: 'NOT-011', tipo: 'audiencia_cancelada', titulo: 'Audiência Cancelada', corpo: 'Audiência Cível — Processo 0099/2023 cancelada.',      usuario_nome: 'Alberto Pinto',  audiencia_nome: 'Audiência Cível — Processo 0099/2023',canal: 'email', status: 'lida',     lida: true,  created_at: aISO(14, 0), enviada_em: aISO(14, 0), entregue_em: aISO(14, 1), lida_em: aISO(14, 30) },
   { id: 'NOT-012', tipo: 'csv_upload', titulo: 'Upload Concluído', corpo: '8 participantes importados via CSV.',                              usuario_nome: 'Rodrigo Pedrosa',audiencia_nome: 'Conciliação — Contrato 2024/0012',    canal: 'push',  status: 'lida',     lida: true,  created_at: hISO(7, 0), enviada_em: hISO(7, 0), entregue_em: hISO(7, 0), lida_em: hISO(7, 10) },
 ]
@@ -271,7 +308,18 @@ export function buildDashboard() {
       evidencias_geradas:       { valor: evH.length, integras: evH.filter(e => e.cadeia_valida).length, taxa_integridade: 1.0 },
     },
     audiencias_ativas: emAnd.map((a: any) => ({ id: a.id, nome: a.nome, horario: `${a.horario_inicio} – ${a.horario_fim}`, local: a.local, presentes: a.presentes, total: a.total_participantes, taxa: a.total_participantes > 0 ? a.presentes / a.total_participantes : 0 })),
-    alertas_recentes: alrt.slice(0, 5).map(n => ({ id: n.id, usuario: n.usuario_nome, tempo_decorrido_min: Math.floor((Date.now() - new Date(n.created_at).getTime()) / 60000), audiencia: n.audiencia_nome })),
+    alertas_recentes: alrt.slice(0, 5).map(n => ({
+      id: n.id,
+      usuario: n.usuario_nome,
+      tipo_participante: n.tipo_participante ?? 'TESTEMUNHA',
+      telefone: n.telefone ?? '(11) 99999-0000',
+      audiencia: n.audiencia_nome,
+      audiencia_local: n.audiencia_local ?? '—',
+      audiencia_horario_inicio: n.audiencia_horario_inicio ?? '00:00',
+      distancia_km: n.distancia_km ?? 0,
+      tempo_deslocamento_min: n.tempo_deslocamento_min ?? 0,
+      tempo_decorrido_min: Math.floor((Date.now() - new Date(n.created_at).getTime()) / 60000),
+    })),
   }
 }
 
